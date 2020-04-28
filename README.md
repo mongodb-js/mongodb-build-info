@@ -61,5 +61,5 @@ npm install -S mongodb-build-info
 # License
 Apache-2.0
 
-[azure-url]: https://dev.azure.com/team-compass/mongosh/_apis/build/status/mongodb-js.mongosh?branchName=master
-[azure-img]: https://dev.azure.com/team-compass/mongosh/_build/latest?definitionId=5&branchName=master
+[azure-url]: https://dev.azure.com/team-compass/mongodb-build-info/_apis/build/status/mongodb-js.mongodb-build-info?branchName=master
+[azure-img]: https://dev.azure.com/team-compass/mongodb-build-info/_build/latest?definitionId=5&branchName=master
