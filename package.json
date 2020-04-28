@@ -1,0 +1,32 @@
+{
+  "name": "mongodb-build-info",
+  "version": "1.0.0",
+  "description": "Extract information from mongodb's buildInfo",
+  "main": "index.js",
+  "scripts": {
+    "check": "mongodb-js-precommit",
+    "test": "mocha test/index.spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mongodb-js/mongodb-build-info.git"
+  },
+  "keywords": [
+    "buildInfo",
+    "mongodb",
+    "compass-tools",
+    "mongodb.js"
+  ],
+  "author": "Irina Shestak <shestak.irina@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/mongodb-js/mongodb-build-info/issues"
+  },
+  "homepage": "https://github.com/mongodb-js/mongodb-build-info#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint-config-mongodb-js": "^5.0.3",
+    "mocha": "^7.1.2",
+    "mongodb-js-precommit": "^2.2.1"
+  }
+}
