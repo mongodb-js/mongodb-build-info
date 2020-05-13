@@ -53,6 +53,12 @@ Returns an object:
 __isGenuine__: boolean. 
 __serverName__: name of the server (mongoDB, cosmosDB, or documentDB).
 
+### getBuildEnv(buildInfo)
+Returns an object:
+
+__serverOs__: build's OS version (macOS, linux, windows etc.).
+__serverArch__: build's architecture (e.g. x86_64).
+
 # Installation
 ```
 npm install -S mongodb-build-info

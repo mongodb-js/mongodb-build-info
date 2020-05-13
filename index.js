@@ -35,6 +35,15 @@ function isLocalhost(uri) {
   return !!uri.match(LOCALHOST_REGEX);
 }
 
+function getBuildEnv(buildInfo) {
+  const serverOs = buildInfo.buildEnvironment ?
+    buildInfo.buildEnvironment.target_os : null;
+  const serverArch = buildInfo.buildEnvironment ?
+    buildInfo.buildEnvironment.target_arch : null;
+
+  return { serverOs, serverArch };
+}
+
 function getGenuineMongoDB(buildInfo, cmdLineOpts) {
   const res = {
     isGenuine: true,
@@ -59,4 +68,4 @@ function getGenuineMongoDB(buildInfo, cmdLineOpts) {
   return res;
 }
 
-module.exports = { getDataLake, isEnterprise, isAtlas, isLocalhost, getGenuineMongoDB };
+module.exports = { getDataLake, isEnterprise, isAtlas, isLocalhost, getGenuineMongoDB, getBuildEnv };

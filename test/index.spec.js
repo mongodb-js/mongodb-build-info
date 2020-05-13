@@ -3,6 +3,7 @@ const fixtures = require('./fixtures');
 const isAtlas = require('../.').isAtlas;
 const getDataLake = require('../.').getDataLake;
 const isLocalhost = require('../.').isLocalhost;
+const getBuildEnv = require('../.').getBuildEnv;
 const isEnterprise = require('../.').isEnterprise;
 const getGenuineMongoDB = require('../.').getGenuineMongoDB;
 
@@ -34,6 +35,14 @@ describe('mongodb-build-info', () => {
 
     it('detects enterprise module for >= 3.2', () => {
       expect(isEnterprise(fixtures.BUILD_INFO_3_2)).to.be.true;
+    });
+  });
+
+  context('getBuildEnv', () => {
+    it('returns server os and server arch', () => {
+      const buildEnv = getBuildEnv(fixtures.BUILD_INFO_3_2);
+      expect(buildEnv.serverOs).to.equal('osx');
+      expect(buildEnv.serverArch).to.equal('x86_64');
     });
   });
 
