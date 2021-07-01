@@ -3,6 +3,7 @@ const fixtures = require('./fixtures');
 const isAtlas = require('../.').isAtlas;
 const getDataLake = require('../.').getDataLake;
 const isLocalhost = require('../.').isLocalhost;
+const isDigitalOcean = require('../.').isDigitalOcean;
 const getBuildEnv = require('../.').getBuildEnv;
 const isEnterprise = require('../.').isEnterprise;
 const getGenuineMongoDB = require('../.').getGenuineMongoDB;
@@ -59,6 +60,12 @@ describe('mongodb-build-info', () => {
 
     it('reports on localhost of type 127.0.0.1', () => {
       expect(isLocalhost('127.0.0.1:27019')).to.be.true;
+    });
+  });
+
+  context('isDigitalOcean', () => {
+    it('reports on digital ocean', () => {
+      expect(isDigitalOcean('mongodb+srv://admin:catscatscats@dave-a1234321.mongo.ondigitalocean.com/test?authSource=admin&replicaSet=dave')).to.be.true;
     });
   });
 

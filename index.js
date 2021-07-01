@@ -1,5 +1,6 @@
-const ATLAS_REGEX = /mongodb.net[:/]/i;
+const ATLAS_REGEX = /mongodb\.net[:/]/i;
 const LOCALHOST_REGEX = /(localhost|127\.0\.0\.1)/i;
+const DIGITAL_OCEAN_REGEX = /\.mongo\.ondigitalocean\.com[:/]/i;
 
 function getDataLake(buildInfo) {
   const res = {
@@ -35,6 +36,10 @@ function isLocalhost(uri) {
   return !!uri.match(LOCALHOST_REGEX);
 }
 
+function isDigitalOcean(uri) {
+  return !!uri.match(DIGITAL_OCEAN_REGEX);
+}
+
 function getBuildEnv(buildInfo) {
   const serverOs = buildInfo.buildEnvironment ?
     buildInfo.buildEnvironment.target_os : null;
@@ -68,4 +73,4 @@ function getGenuineMongoDB(buildInfo, cmdLineOpts) {
   return res;
 }
 
-module.exports = { getDataLake, isEnterprise, isAtlas, isLocalhost, getGenuineMongoDB, getBuildEnv };
+module.exports = { getDataLake, isEnterprise, isAtlas, isLocalhost, isDigitalOcean, getGenuineMongoDB, getBuildEnv };
