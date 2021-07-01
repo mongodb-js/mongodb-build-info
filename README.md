@@ -47,6 +47,9 @@ Returns a boolean.
 ### isLocalhost(uri)
 Returns a boolean.
 
+### isDigitalOcean(uri)
+Returns a boolean.
+
 ### getGenuineMongoDB(buildInfo, cmdLineOpts)
 Returns an object:
 
