@@ -95,7 +95,6 @@ describe('mongodb-build-info', () => {
       expect(isLocalhost('mongodb://remotelocalhost')).to.be.false;
     });
 
-
     it('does not throw and returns with invalid argument', () => {
       expect(isLocalhost(123)).to.be.false;
       expect(isLocalhost('')).to.be.false;
