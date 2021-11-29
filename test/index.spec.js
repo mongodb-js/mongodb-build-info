@@ -50,6 +50,8 @@ describe('mongodb-build-info', () => {
   context('isAtlas', () => {
     it('reports on atlas', () => {
       expect(isAtlas('mongodb+srv://admin:catscatscats@cat-data-sets.cats.mongodb.net/admin')).to.be.true;
+      expect(isAtlas('mongodb://admin:catscatscats@cat-data-sets.cats.mongodb.net/admin')).to.be.true;
+      expect(isAtlas('mongodb://admin:catscatscats@cat-data-sets.cats1.mongodb.net,cat-data-sets.cats2.mongodb.net/admin')).to.be.true;
     });
 
     it('works with host only', () => {
@@ -91,7 +93,21 @@ describe('mongodb-build-info', () => {
       expect(isLocalhost('127.0.0.1:27019')).to.be.true;
     });
 
+    it('works as url', () => {
+      expect(isLocalhost('mongodb://127.0.0.1:27019')).to.be.true;
+      expect(isLocalhost('mongodb+srv://127.0.0.1')).to.be.true;
+      expect(isLocalhost('mongodb://localhost')).to.be.true;
+      expect(isLocalhost('mongodb://localhost:27019')).to.be.true;
+    });
+
+    it('works as hostname', () => {
+      expect(isLocalhost('127.0.0.1')).to.be.true;
+      expect(isLocalhost('localhost')).to.be.true;
+    });
+
     it('does not report if localhost or 127.0.0.1 is not the hostname', () => {
+      expect(isLocalhost('127.0.0.2')).to.be.false;
+      expect(isLocalhost('remotehost')).to.be.false;
       expect(isLocalhost('mongodb://remotelocalhost')).to.be.false;
     });
 
