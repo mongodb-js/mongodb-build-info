@@ -30,7 +30,7 @@ function isEnterprise(buildInfo) {
   return false;
 }
 
-function getHostNameFromHost(host) {
+function getHostnameFromHost(host) {
   return host.split(':')[0];
 }
 
@@ -45,7 +45,7 @@ function getHostnameFromUrl(url) {
     return firstHost.split(':')[0];
   } catch (e) {
     // we assume is already an hostname, will further be checked against regexes
-    return getHostNameFromHost(url);
+    return getHostnameFromHost(url);
   }
 }
 
