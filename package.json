@@ -28,5 +28,8 @@
     "eslint-config-mongodb-js": "^5.0.3",
     "mocha": "^7.1.2",
     "mongodb-js-precommit": "^2.2.1"
+  },
+  "dependencies": {
+    "mongodb-connection-string-url": "^2.2.0"
   }
 }

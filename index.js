@@ -1,6 +1,8 @@
-const ATLAS_REGEX = /mongodb\.net[:/]/i;
-const LOCALHOST_REGEX = /(localhost|127\.0\.0\.1)/i;
-const DIGITAL_OCEAN_REGEX = /\.mongo\.ondigitalocean\.com[:/]/i;
+const { default: ConnectionString } = require('mongodb-connection-string-url');
+
+const ATLAS_REGEX = /\.mongodb(-dev)?\.net$/i;
+const LOCALHOST_REGEX = /^(localhost|127\.0\.0\.1)$/i;
+const DIGITAL_OCEAN_REGEX = /\.mongo\.ondigitalocean\.com$/i;
 
 function getDataLake(buildInfo) {
   const res = {
@@ -28,16 +30,35 @@ function isEnterprise(buildInfo) {
   return false;
 }
 
+function getHostNameFromHost(host) {
+  return host.split(':')[0];
+}
+
+function getHostnameFromUrl(url) {
+  if (typeof url !== 'string') {
+    return '';
+  }
+
+  try {
+    const connectionString = new ConnectionString(url);
+    const firstHost = connectionString.hosts[0];
+    return firstHost.split(':')[0];
+  } catch (e) {
+    // we assume is already an hostname, will further be checked against regexes
+    return getHostNameFromHost(url);
+  }
+}
+
 function isAtlas(uri) {
-  return !!uri.match(ATLAS_REGEX);
+  return !!getHostnameFromUrl(uri).match(ATLAS_REGEX);
 }
 
 function isLocalhost(uri) {
-  return !!uri.match(LOCALHOST_REGEX);
+  return !!getHostnameFromUrl(uri).match(LOCALHOST_REGEX);
 }
 
 function isDigitalOcean(uri) {
-  return !!uri.match(DIGITAL_OCEAN_REGEX);
+  return !!getHostnameFromUrl(uri).match(DIGITAL_OCEAN_REGEX);
 }
 
 function getBuildEnv(buildInfo) {
