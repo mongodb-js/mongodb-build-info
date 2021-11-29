@@ -50,10 +50,41 @@ describe('mongodb-build-info', () => {
   context('isAtlas', () => {
     it('reports on atlas', () => {
       expect(isAtlas('mongodb+srv://admin:catscatscats@cat-data-sets.cats.mongodb.net/admin')).to.be.true;
+      expect(isAtlas('mongodb://admin:catscatscats@cat-data-sets.cats.mongodb.net/admin')).to.be.true;
+      expect(isAtlas('mongodb://admin:catscatscats@cat-data-sets.cats1.mongodb.net,cat-data-sets.cats2.mongodb.net/admin')).to.be.true;
+    });
+
+    it('works with host only', () => {
+      expect(isAtlas('cat-data-sets.cats.mongodb.net:27017')).to.be.true;
+    });
+
+    it('works with hostname', () => {
+      expect(isAtlas('cat-data-sets.cats.mongodb.net')).to.be.true;
+    });
+
+    it('returns true with atlas dev', () => {
+      expect(isAtlas('mongodb+srv://admin:catscatscats@cat-data-sets.cats.mongodb-dev.net/admin')).to.be.true;
+      expect(isAtlas('cat-data-sets.cats.mongodb-dev.net')).to.be.true;
+    });
+
+    it('returns false if not atlas', () => {
+      expect(isAtlas('cat-data-sets.cats.mangodb.net')).to.be.false;
+      expect(isAtlas('cat-data-sets.catsmongodb.net')).to.be.false;
+      expect(isAtlas('cat-data-sets.cats.mongodb.netx')).to.be.false;
+      expect(isAtlas('cat-data-sets.cats.mongodb.com')).to.be.false;
+      expect(isAtlas('localhost')).to.be.false;
+    });
+
+    it('does not throw and returns with invalid argument', () => {
+      expect(isAtlas(123)).to.be.false;
+      expect(isAtlas('')).to.be.false;
+      expect(isAtlas({})).to.be.false;
+      expect(isAtlas(undefined)).to.be.false;
+      expect(isAtlas(null)).to.be.false;
     });
   });
 
-  it('isLocalhost', () => {
+  context('isLocalhost', () => {
     it('reports on localhost', () => {
       expect(isLocalhost('localhost:27019')).to.be.true;
     });
@@ -61,11 +92,59 @@ describe('mongodb-build-info', () => {
     it('reports on localhost of type 127.0.0.1', () => {
       expect(isLocalhost('127.0.0.1:27019')).to.be.true;
     });
+
+    it('works as url', () => {
+      expect(isLocalhost('mongodb://127.0.0.1:27019')).to.be.true;
+      expect(isLocalhost('mongodb+srv://127.0.0.1')).to.be.true;
+      expect(isLocalhost('mongodb://localhost')).to.be.true;
+      expect(isLocalhost('mongodb://localhost:27019')).to.be.true;
+    });
+
+    it('works as hostname', () => {
+      expect(isLocalhost('127.0.0.1')).to.be.true;
+      expect(isLocalhost('localhost')).to.be.true;
+    });
+
+    it('does not report if localhost or 127.0.0.1 is not the hostname', () => {
+      expect(isLocalhost('127.0.0.2')).to.be.false;
+      expect(isLocalhost('remotehost')).to.be.false;
+      expect(isLocalhost('mongodb://remotelocalhost')).to.be.false;
+    });
+
+    it('does not throw and returns with invalid argument', () => {
+      expect(isLocalhost(123)).to.be.false;
+      expect(isLocalhost('')).to.be.false;
+      expect(isLocalhost({})).to.be.false;
+      expect(isLocalhost(undefined)).to.be.false;
+      expect(isLocalhost(null)).to.be.false;
+    });
   });
 
   context('isDigitalOcean', () => {
     it('reports on digital ocean', () => {
       expect(isDigitalOcean('mongodb+srv://admin:catscatscats@dave-a1234321.mongo.ondigitalocean.com/test?authSource=admin&replicaSet=dave')).to.be.true;
+    });
+
+    it('works with hostname only', () => {
+      expect(isDigitalOcean('dave-a1234321.mongo.ondigitalocean.com')).to.be.true;
+    });
+
+    it('works with host only', () => {
+      expect(isDigitalOcean('dave-a1234321.mongo.ondigitalocean.com:27017')).to.be.true;
+    });
+
+    it('returns false if not digitalocean', () => {
+      expect(isDigitalOcean('dave-a1234321.mongo.ondigitalocean.com2')).to.be.false;
+      expect(isDigitalOcean('dave-a1234321mongo.ondigitalocean.com')).to.be.false;
+      expect(isDigitalOcean('dave-a1234321.mongoxondigitalocean.com')).to.be.false;
+    });
+
+    it('does not throw and returns with invalid argument', () => {
+      expect(isDigitalOcean(123)).to.be.false;
+      expect(isDigitalOcean('')).to.be.false;
+      expect(isDigitalOcean({})).to.be.false;
+      expect(isDigitalOcean(undefined)).to.be.false;
+      expect(isDigitalOcean(null)).to.be.false;
     });
   });
 
