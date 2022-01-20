@@ -96,17 +96,21 @@ describe('mongodb-build-info', () => {
     it('works as url', () => {
       expect(isLocalhost('mongodb://127.0.0.1:27019')).to.be.true;
       expect(isLocalhost('mongodb+srv://127.0.0.1')).to.be.true;
+      expect(isLocalhost('mongodb://0.0.0.0:27019')).to.be.true;
+      expect(isLocalhost('mongodb+srv://0.0.0.0')).to.be.true;
       expect(isLocalhost('mongodb://localhost')).to.be.true;
       expect(isLocalhost('mongodb://localhost:27019')).to.be.true;
     });
 
     it('works as hostname', () => {
       expect(isLocalhost('127.0.0.1')).to.be.true;
+      expect(isLocalhost('0.0.0.0')).to.be.true;
       expect(isLocalhost('localhost')).to.be.true;
     });
 
     it('does not report if localhost or 127.0.0.1 is not the hostname', () => {
       expect(isLocalhost('127.0.0.2')).to.be.false;
+      expect(isLocalhost('0.0.0.1')).to.be.false;
       expect(isLocalhost('remotehost')).to.be.false;
       expect(isLocalhost('mongodb://remotelocalhost')).to.be.false;
     });

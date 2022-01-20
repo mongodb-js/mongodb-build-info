@@ -1,7 +1,7 @@
 const { default: ConnectionString } = require('mongodb-connection-string-url');
 
 const ATLAS_REGEX = /\.mongodb(-dev)?\.net$/i;
-const LOCALHOST_REGEX = /^(localhost|127\.0\.0\.1)$/i;
+const LOCALHOST_REGEX = /^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/i;
 const DIGITAL_OCEAN_REGEX = /\.mongo\.ondigitalocean\.com$/i;
 
 function getDataLake(buildInfo) {
