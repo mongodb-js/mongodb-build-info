@@ -1,4 +1,4 @@
-# mongodb-build-info [![Build Status][azure-url]][azure-img]
+# mongodb-build-info
 
 Helpful functions to figure out if a connection is on Atlas, Atlas Data Lake,
 Enterpise, or DocumentDB/CosmosDB.
@@ -69,6 +69,3 @@ npm install -S mongodb-build-info
 
 # License
 Apache-2.0
-
-[azure-url]: https://dev.azure.com/team-compass/compass/_apis/build/status/mongodb-js.mongodb-build-info?branchName=master
-[azure-img]: https://dev.azure.com/team-compass/compass/_build/results?buildId=1457&view=results
