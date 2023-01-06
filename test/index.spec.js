@@ -93,6 +93,30 @@ describe('mongodb-build-info', () => {
       expect(isLocalhost('127.0.0.1:27019')).to.be.true;
     });
 
+    // Although 127.0.0.1 is usually used for localhost,
+    // anything in the 127.0.0.1 -> 127.255.255.255 can be used.
+    it('reports on localhost of type 127.x.x.x', () => {
+      expect(isLocalhost('127.0.100.1:27019')).to.be.true;
+      expect(isLocalhost('127.250.100.250:27019')).to.be.true;
+      expect(isLocalhost('127.10.0.0:27019')).to.be.true;
+    });
+
+    // IPv6 loopback addresses.
+    it('reports on localhost of type [::1]', () => {
+      expect(isLocalhost('[::1]')).to.be.true;
+      expect(isLocalhost('mongodb://[::1]/?readPreference=secondary')).to.be.true;
+      expect(isLocalhost('[0000:0000:0000:0000:0000:0000:0000:0001]')).to.be.true;
+      expect(isLocalhost('[0:0:0:0:0:0:0:1]')).to.be.true;
+      expect(isLocalhost('[0::1]')).to.be.true;
+      expect(isLocalhost('[::1]:27019')).to.be.true;
+      expect(isLocalhost('[0:0:0:0:0:0:0:1]:27019')).to.be.true;
+      expect(isLocalhost('[0::1]:27019')).to.be.true;
+    });
+
+    it('reports on localhost of type 0.0.0.0', () => {
+      expect(isLocalhost('0.0.0.0:27019')).to.be.true;
+    });
+
     it('works as url', () => {
       expect(isLocalhost('mongodb://127.0.0.1:27019')).to.be.true;
       expect(isLocalhost('mongodb+srv://127.0.0.1')).to.be.true;
@@ -109,10 +133,15 @@ describe('mongodb-build-info', () => {
     });
 
     it('does not report if localhost or 127.0.0.1 is not the hostname', () => {
-      expect(isLocalhost('127.0.0.2')).to.be.false;
+      expect(isLocalhost('127.0.0.500')).to.be.false;
+      expect(isLocalhost('128.0.0.2')).to.be.false;
       expect(isLocalhost('0.0.0.1')).to.be.false;
       expect(isLocalhost('remotehost')).to.be.false;
       expect(isLocalhost('mongodb://remotelocalhost')).to.be.false;
+      expect(isLocalhost('[test:ipv6::1]')).to.be.false;
+      expect(isLocalhost('[1:0:0:0:0:0:0:1]')).to.be.false;
+      expect(isLocalhost('[test:ipv6::1]:27019')).to.be.false;
+      expect(isLocalhost('[1:0:0:0:0:0:0:1]:27019')).to.be.false;
     });
 
     it('does not throw and returns with invalid argument', () => {
