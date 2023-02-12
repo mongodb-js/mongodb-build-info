@@ -32,7 +32,7 @@
     "eslint": "^8.3.0",
     "eslint-config-mongodb-js": "^5.0.3",
     "mocha": "^7.1.2",
-    "release-it": "^14.11.8"
+    "release-it": "^15.6.0"
   },
   "dependencies": {
     "mongodb-connection-string-url": "^2.2.0"
