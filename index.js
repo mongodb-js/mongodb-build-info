@@ -88,17 +88,19 @@ function getGenuineMongoDB(uri) {
       isGenuine: false,
       serverName: 'cosmosdb'
     };
-  } else if (hostname.match(DOCUMENT_DB_REGEX)) {
+  }
+
+  if (hostname.match(DOCUMENT_DB_REGEX)) {
     return {
       isGenuine: false,
       serverName: 'documentdb'
     };
-  } else {
-    return {
-      isGenuine: true,
-      serverName: 'mongodb'
-    };
   }
+
+  return {
+    isGenuine: true,
+    serverName: 'mongodb'
+  };
 }
 
 module.exports = { getDataLake, isEnterprise, isAtlas, isAtlasStream, isLocalhost, isDigitalOcean, getGenuineMongoDB, getBuildEnv };
