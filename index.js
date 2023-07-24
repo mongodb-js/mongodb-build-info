@@ -4,6 +4,8 @@ const ATLAS_REGEX = /\.mongodb(-dev|-qa|-stage)?\.net$/i;
 const ATLAS_STREAM_REGEX = /^atlas-stream-.+/i;
 const LOCALHOST_REGEX = /^(localhost|127\.([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])|0\.0\.0\.0|(?:0*\:)*?:?0*1)$/i;
 const DIGITAL_OCEAN_REGEX = /\.mongo\.ondigitalocean\.com$/i;
+const COSMOS_DB_REGEX = /\.cosmos\.azure\.com$/i;
+const DOCUMENT_DB_REGEX = /docdb(-elastic)?\.amazonaws\.com$/i;
 
 function getDataLake(buildInfo) {
   const res = {
@@ -79,28 +81,26 @@ function getBuildEnv(buildInfo) {
   return { serverOs, serverArch };
 }
 
-function getGenuineMongoDB(buildInfo, cmdLineOpts) {
-  const res = {
+function getGenuineMongoDB(uri) {
+  const hostname = getHostnameFromUrl(uri);
+  if (hostname.match(COSMOS_DB_REGEX)) {
+    return {
+      isGenuine: false,
+      serverName: 'cosmosdb'
+    };
+  }
+
+  if (hostname.match(DOCUMENT_DB_REGEX)) {
+    return {
+      isGenuine: false,
+      serverName: 'documentdb'
+    };
+  }
+
+  return {
     isGenuine: true,
     serverName: 'mongodb'
   };
-
-  if (cmdLineOpts) {
-    if (buildInfo.hasOwnProperty('_t')) {
-      res.isGenuine = false;
-      res.serverName = 'cosmosdb';
-    }
-
-    if (
-      cmdLineOpts.hasOwnProperty('errmsg') &&
-      cmdLineOpts.errmsg.indexOf('not supported') !== -1
-    ) {
-      res.isGenuine = false;
-      res.serverName = 'documentdb';
-    }
-  }
-
-  return res;
 }
 
 module.exports = { getDataLake, isEnterprise, isAtlas, isAtlasStream, isLocalhost, isDigitalOcean, getGenuineMongoDB, getBuildEnv };

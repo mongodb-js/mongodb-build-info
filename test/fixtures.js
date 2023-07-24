@@ -75,11 +75,16 @@ const CMD_LINE_OPTS = {
   "ok" : 1
 };
 
-const DOCUMENTDB_CMD_LINE_OPTS = {
-  "ok" : 0,
-  "errmsg" : "Feature not supported: getCmdLineOpts",
-  "code" : 303
-};
+const COSMOS_DB_URI = [
+  'mongodb://x:y@compass-serverless.mongo.cosmos.azure.com:19555/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@compass-serverless@',
+  'mongodb://x:y@compass.mongo.cosmos.azure.com:19555/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@compass@',
+  'mongodb+srv://x:y@compass-vcore.mongocluster.cosmos.azure.com/?retrywrites=false&maxIdleTimeMS=120000'
+]
+
+const DOCUMENT_DB_URIS = [
+  "mongodb://x:y@docdb-2001-01-01-01-01-01.cluster-abc.eu-central-1.docdb.amazonaws.com:27017/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false",
+  "mongodb://x:y@elastic-docdb-123456789.eu-central-1.docdb-elastic.amazonaws.com:27017"
+];
 
 const COSMOSDB_BUILD_INFO = {
   "_t" : "BuildInfoResponse",
@@ -121,7 +126,7 @@ module.exports = {
   BUILD_INFO_OLD,
   BUILD_INFO_3_2,
   CMD_LINE_OPTS,
-  DOCUMENTDB_CMD_LINE_OPTS,
-  COSMOSDB_BUILD_INFO,
+  DOCUMENT_DB_URIS,
+  COSMOS_DB_URI,
   DATALAKE_BUILD_INFO
 };
