@@ -9,7 +9,7 @@ export declare function isAtlasStream(uri: string): boolean;
 export declare function isLocalhost(uri: string): boolean;
 export declare function isDigitalOcean(uri: string): boolean;
 
-export declare function getGenuineMongoDB(buildInfo: any, cmdLineOpts: any): {
+export declare function getGenuineMongoDB(uri: string): {
   isGenuine: boolean;
   serverName: string;
 };
