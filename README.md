@@ -25,7 +25,7 @@ MongoClient.connect('localhost:27017', function (err, client) {
 
   function parseCmdLineOpts (err, res) {
     if (err) console.log('Command failed', err.message)
-    
+
     const { isGenuine, serverName } = getGenuineMongoDB(buildInfo, res)
   }
 })
@@ -35,13 +35,16 @@ MongoClient.connect('localhost:27017', function (err, client) {
 ### getDataLake(buildInfo)
 Returns an object:
 
-__isDataLake__: boolean. 
+__isDataLake__: boolean.
 __dlVersion__: version of dataLake, a string.
 
 ### isEnterprise(buildInfo)
 Returns a boolean.
 
 ### isAtlas(uri)
+Returns a boolean.
+
+### isAtlasStream(uri)
 Returns a boolean.
 
 ### isLocalhost(uri)
@@ -53,7 +56,7 @@ Returns a boolean.
 ### getGenuineMongoDB(buildInfo, cmdLineOpts)
 Returns an object:
 
-__isGenuine__: boolean. 
+__isGenuine__: boolean.
 __serverName__: name of the server (mongoDB, cosmosDB, or documentDB).
 
 ### getBuildEnv(buildInfo)

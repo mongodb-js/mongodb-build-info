@@ -1,6 +1,7 @@
 const expect = require('chai').expect;
 const fixtures = require('./fixtures');
 const isAtlas = require('../.').isAtlas;
+const isAtlasStream = require('../.').isAtlasStream;
 const getDataLake = require('../.').getDataLake;
 const isLocalhost = require('../.').isLocalhost;
 const isDigitalOcean = require('../.').isDigitalOcean;
@@ -67,6 +68,16 @@ describe('mongodb-build-info', () => {
       expect(isAtlas('cat-data-sets.cats.mongodb-dev.net')).to.be.true;
     });
 
+    it('returns true with atlas qa', () => {
+      expect(isAtlas('mongodb+srv://admin:catscatscats@cat-data-sets.cats.mongodb-qa.net/admin')).to.be.true;
+      expect(isAtlas('cat-data-sets.cats.mongodb-qa.net')).to.be.true;
+    });
+
+    it('returns true with atlas staging', () => {
+      expect(isAtlas('mongodb+srv://admin:catscatscats@cat-data-sets.cats.mongodb-stage.net/admin')).to.be.true;
+      expect(isAtlas('cat-data-sets.cats.mongodb-stage.net')).to.be.true;
+    });
+
     it('returns false if not atlas', () => {
       expect(isAtlas('cat-data-sets.cats.mangodb.net')).to.be.false;
       expect(isAtlas('cat-data-sets.catsmongodb.net')).to.be.false;
@@ -81,6 +92,52 @@ describe('mongodb-build-info', () => {
       expect(isAtlas({})).to.be.false;
       expect(isAtlas(undefined)).to.be.false;
       expect(isAtlas(null)).to.be.false;
+    });
+  });
+
+  context('isAtlasStream', () => {
+    it('reports on atlas', () => {
+      expect(isAtlasStream('mongodb://admin:catscatscats@atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb.net/')).to.be.true;
+      expect(isAtlasStream('mongodb://admin:catscatscats@atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb.net/')).to.be.true;
+    });
+
+    it('works with host only', () => {
+      expect(isAtlasStream('atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb.net:27017')).to.be.true;
+    });
+
+    it('works with hostname', () => {
+      expect(isAtlasStream('atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb.net')).to.be.true;
+    });
+
+    it('returns true with atlas dev', () => {
+      expect(isAtlasStream('mongodb://admin:catscatscats@atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb-dev.net/')).to.be.true;
+      expect(isAtlasStream('atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb-dev.net')).to.be.true;
+    });
+
+    it('returns true with atlas qa', () => {
+      expect(isAtlasStream('mongodb://admin:catscatscats@atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb-qa.net/')).to.be.true;
+      expect(isAtlasStream('atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb-qa.net')).to.be.true;
+    });
+
+    it('returns true with atlas staging', () => {
+      expect(isAtlasStream('mongodb://admin:catscatscats@atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb-stage.net/')).to.be.true;
+      expect(isAtlasStream('atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb-stage.net')).to.be.true;
+    });
+
+    it('returns false if not atlas stream', () => {
+      expect(isAtlasStream('cat-data-sets.cats.mangodb.net')).to.be.false;
+      expect(isAtlasStream('cat-data-sets.catsmongodb.net')).to.be.false;
+      expect(isAtlasStream('cat-data-sets.cats.mongodb.netx')).to.be.false;
+      expect(isAtlasStream('cat-data-sets.cats.mongodb.com')).to.be.false;
+      expect(isAtlasStream('localhost')).to.be.false;
+    });
+
+    it('does not throw and returns with invalid argument', () => {
+      expect(isAtlasStream(123)).to.be.false;
+      expect(isAtlasStream('')).to.be.false;
+      expect(isAtlasStream({})).to.be.false;
+      expect(isAtlasStream(undefined)).to.be.false;
+      expect(isAtlasStream(null)).to.be.false;
     });
   });
 

@@ -1,6 +1,7 @@
 const { default: ConnectionString } = require('mongodb-connection-string-url');
 
-const ATLAS_REGEX = /\.mongodb(-dev)?\.net$/i;
+const ATLAS_REGEX = /\.mongodb(-dev|-qa|-stage)?\.net$/i;
+const ATLAS_STREAM_REGEX = /^atlas-stream-.+/i;
 const LOCALHOST_REGEX = /^(localhost|127\.([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])|0\.0\.0\.0|(?:0*\:)*?:?0*1)$/i;
 const DIGITAL_OCEAN_REGEX = /\.mongo\.ondigitalocean\.com$/i;
 
@@ -56,6 +57,11 @@ function isAtlas(uri) {
   return !!getHostnameFromUrl(uri).match(ATLAS_REGEX);
 }
 
+function isAtlasStream(uri) {
+  const host = getHostnameFromUrl(uri);
+  return !!(host.match(ATLAS_REGEX) && host.match(ATLAS_STREAM_REGEX));
+}
+
 function isLocalhost(uri) {
   return !!getHostnameFromUrl(uri).match(LOCALHOST_REGEX);
 }
@@ -97,4 +103,4 @@ function getGenuineMongoDB(buildInfo, cmdLineOpts) {
   return res;
 }
 
-module.exports = { getDataLake, isEnterprise, isAtlas, isLocalhost, isDigitalOcean, getGenuineMongoDB, getBuildEnv };
+module.exports = { getDataLake, isEnterprise, isAtlas, isAtlasStream, isLocalhost, isDigitalOcean, getGenuineMongoDB, getBuildEnv };
