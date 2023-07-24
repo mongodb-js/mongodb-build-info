@@ -5,7 +5,7 @@ const ATLAS_STREAM_REGEX = /^atlas-stream-.+/i;
 const LOCALHOST_REGEX = /^(localhost|127\.([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])|0\.0\.0\.0|(?:0*\:)*?:?0*1)$/i;
 const DIGITAL_OCEAN_REGEX = /\.mongo\.ondigitalocean\.com$/i;
 const COSMOS_DB_REGEX = /mongo\.cosmos\.azure\.com$/i;
-const DOCUMENT_DB_REGEX = /docdb\.amazonaws\.com$/i;
+const DOCUMENT_DB_REGEX = /docdb(-elastic)?\.amazonaws\.com$/i;
 
 function getDataLake(buildInfo) {
   const res = {
