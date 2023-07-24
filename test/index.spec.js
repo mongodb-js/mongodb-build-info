@@ -240,15 +240,19 @@ describe('mongodb-build-info', () => {
 
   context('isGenuineMongoDB', () => {
     it('reports on CosmosDB', () => {
-      const isGenuine = getGenuineMongoDB(fixtures.COSMOSDB_BUILD_INFO, fixtures.CMD_LINE_OPTS);
-      expect(isGenuine.isGenuine).to.be.false;
-      expect(isGenuine.serverName).to.equal('cosmosdb');
+      fixtures.COSMOS_DB_URI.forEach((uri) => {
+        const isGenuine = getGenuineMongoDB(uri);
+        expect(isGenuine.isGenuine).to.be.false;
+        expect(isGenuine.serverName).to.equal('cosmosdb');
+      });
     });
 
     it('reports on DocumentDB', () => {
-      const isGenuine = getGenuineMongoDB(fixtures.BUILD_INFO_3_2, fixtures.DOCUMENTDB_CMD_LINE_OPTS);
-      expect(isGenuine.isGenuine).to.be.false;
-      expect(isGenuine.serverName).to.equal('documentdb');
+      fixtures.DOCUMENT_DB_URIS.forEach((uri) => {
+        const isGenuine = getGenuineMongoDB(uri);
+        expect(isGenuine.isGenuine).to.be.false;
+        expect(isGenuine.serverName).to.equal('documentdb');
+      });
     });
 
     it('does not report on 3.2', () => {
