@@ -5,6 +5,7 @@ export declare function getDataLake(buildInfo: any): {
 
 export declare function isEnterprise(buildInfo: any): boolean;
 export declare function isAtlas(uri: string): boolean;
+export declare function isAtlasStream(uri: string): boolean;
 export declare function isLocalhost(uri: string): boolean;
 export declare function isDigitalOcean(uri: string): boolean;
 
