@@ -53,6 +53,17 @@ function isAtlas(uri) {
   return !!getHostnameFromUrl(uri).match(ATLAS_REGEX);
 }
 
+async function isLocalAtlas(countFn) {
+  try {
+    const count = await countFn('admin', 'atlascli', {
+      managedClusterType: 'atlasCliLocalDevCluster'
+    });
+    return count > 0;
+  } catch (e) {
+    return false;
+  }
+}
+
 function isLocalhost(uri) {
   return !!getHostnameFromUrl(uri).match(LOCALHOST_REGEX);
 }
@@ -94,4 +105,13 @@ function getGenuineMongoDB(buildInfo, cmdLineOpts) {
   return res;
 }
 
-module.exports = { getDataLake, isEnterprise, isAtlas, isLocalhost, isDigitalOcean, getGenuineMongoDB, getBuildEnv };
+module.exports = {
+  getDataLake,
+  isEnterprise,
+  isAtlas,
+  isLocalAtlas,
+  isLocalhost,
+  isDigitalOcean,
+  getGenuineMongoDB,
+  getBuildEnv
+};

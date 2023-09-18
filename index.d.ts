@@ -5,6 +5,8 @@ export declare function getDataLake(buildInfo: any): {
 
 export declare function isEnterprise(buildInfo: any): boolean;
 export declare function isAtlas(uri: string): boolean;
+type IsLocalAtlasCountFn = (db: string, ns: string, query: Record<string, any>) => Promise<number>;
+export declare function isLocalAtlas(countFn: IsLocalAtlasCountFn): Promise<boolean>;
 export declare function isLocalhost(uri: string): boolean;
 export declare function isDigitalOcean(uri: string): boolean;
 

@@ -1,12 +1,15 @@
 const expect = require('chai').expect;
 const fixtures = require('./fixtures');
-const isAtlas = require('../.').isAtlas;
-const getDataLake = require('../.').getDataLake;
-const isLocalhost = require('../.').isLocalhost;
-const isDigitalOcean = require('../.').isDigitalOcean;
-const getBuildEnv = require('../.').getBuildEnv;
-const isEnterprise = require('../.').isEnterprise;
-const getGenuineMongoDB = require('../.').getGenuineMongoDB;
+const {
+  isAtlas,
+  getDataLake,
+  isLocalhost,
+  isLocalAtlas,
+  isDigitalOcean,
+  getBuildEnv,
+  isEnterprise,
+  getGenuineMongoDB,
+} = require('..');
 
 describe('mongodb-build-info', () => {
   context('isDataLake', () => {
@@ -81,6 +84,33 @@ describe('mongodb-build-info', () => {
       expect(isAtlas({})).to.be.false;
       expect(isAtlas(undefined)).to.be.false;
       expect(isAtlas(null)).to.be.false;
+    });
+  });
+
+  context('isLocalAtlas', () => {
+    it('calls counts function with expected args', async function () {
+      let data = [];
+      await isLocalAtlas((...args) => {
+        data = args;
+      });
+
+      expect(data[0]).to.equal('admin');
+      expect(data[1]).to.equal('atlascli');
+      expect(data[2]).to.deep.equal({
+        managedClusterType: 'atlasCliLocalDevCluster'
+      });
+    });
+    it('returns false when count resolves to 0', async function () {
+      const res = await isLocalAtlas(() => Promise.resolve(0));
+      expect(res).to.be.false;
+    });
+    it('returns false when count throws', async function () {
+      const res = await isLocalAtlas(() => Promise.reject('No such db'));
+      expect(res).to.be.false;
+    });
+    it('returns true when count resolves to 1', async function () {
+      const res = await isLocalAtlas(() => Promise.resolve(1));
+      expect(res).to.be.true;
     });
   });
 
