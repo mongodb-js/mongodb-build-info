@@ -1,13 +1,16 @@
 const expect = require('chai').expect;
 const fixtures = require('./fixtures');
-const isAtlas = require('../.').isAtlas;
-const isAtlasStream = require('../.').isAtlasStream;
-const getDataLake = require('../.').getDataLake;
-const isLocalhost = require('../.').isLocalhost;
-const isDigitalOcean = require('../.').isDigitalOcean;
-const getBuildEnv = require('../.').getBuildEnv;
-const isEnterprise = require('../.').isEnterprise;
-const getGenuineMongoDB = require('../.').getGenuineMongoDB;
+const {
+  isAtlas,
+  isAtlasStream,
+  getDataLake,
+  isLocalhost,
+  isLocalAtlas,
+  isDigitalOcean,
+  getBuildEnv,
+  isEnterprise,
+  getGenuineMongoDB,
+} = require('..');
 
 describe('mongodb-build-info', () => {
   context('isDataLake', () => {
@@ -92,6 +95,40 @@ describe('mongodb-build-info', () => {
       expect(isAtlas({})).to.be.false;
       expect(isAtlas(undefined)).to.be.false;
       expect(isAtlas(null)).to.be.false;
+    });
+  });
+
+  context('isLocalAtlas', () => {
+    it('calls counts function with expected args', (done) => {
+      isLocalAtlas((db, coll, query) => {
+        expect(db).to.equal('admin');
+        expect(coll).to.equal('atlascli');
+        expect(query).to.deep.equal({
+          managedClusterType: 'atlasCliLocalDevCluster'
+        });
+        done();
+      });
+    });
+    it('returns false when count resolves to 0', (done) => {
+      isLocalAtlas(() => Promise.resolve(0))
+        .then(res => {
+          expect(res).to.be.false;
+          done();
+        });
+    });
+    it('returns false when count throws', (done) => {
+      isLocalAtlas(() => Promise.reject('No such db'))
+        .then(res => {
+          expect(res).to.be.false;
+          done();
+        });
+    });
+    it('returns true when count resolves to 1', (done) => {
+      isLocalAtlas(() => Promise.resolve(1))
+        .then(res => {
+          expect(res).to.be.true;
+          done();
+        });
     });
   });
 

@@ -44,6 +44,9 @@ Returns a boolean.
 ### isAtlas(uri)
 Returns a boolean.
 
+### isLocalAtlas(count: (db: string, coll: string, query: Document) => Promise\<number\>)
+Returns a Promise\<boolean\>.
+
 ### isAtlasStream(uri)
 Returns a boolean.
 
