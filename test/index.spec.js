@@ -99,32 +99,39 @@ describe('mongodb-build-info', () => {
   });
 
   context('isLocalAtlas', () => {
-    it('calls counts function with expected args', async function () {
-      let data = [];
-      await isLocalAtlas((...args) => {
-        data = args;
-      });
-
-      expect(data[0]).to.equal('admin');
-      expect(data[1]).to.equal('atlascli');
-      expect(data[2]).to.deep.equal({
-        managedClusterType: 'atlasCliLocalDevCluster'
+    it('calls counts function with expected args', (done) => {
+      isLocalAtlas((db, coll, query) => {
+        expect(db).to.equal('admin');
+        expect(coll).to.equal('atlascli');
+        expect(query).to.deep.equal({
+          managedClusterType: 'atlasCliLocalDevCluster'
+        });
+        done();
       });
     });
-    it('returns false when count resolves to 0', async function () {
-      const res = await isLocalAtlas(() => Promise.resolve(0));
-      expect(res).to.be.false;
+    it('returns false when count resolves to 0', (done) => {
+      isLocalAtlas(() => Promise.resolve(0))
+        .then(res => {
+          expect(res).to.be.false;
+          done();
+        });
     });
-    it('returns false when count throws', async function () {
-      const res = await isLocalAtlas(() => Promise.reject('No such db'));
-      expect(res).to.be.false;
+    it('returns false when count throws', (done) => {
+      isLocalAtlas(() => Promise.reject('No such db'))
+        .then(res => {
+          expect(res).to.be.false;
+          done();
+        });
     });
-    it('returns true when count resolves to 1', async function () {
-      const res = await isLocalAtlas(() => Promise.resolve(1));
-      expect(res).to.be.true;
+    it('returns true when count resolves to 1', (done) => {
+      isLocalAtlas(() => Promise.resolve(1))
+        .then(res => {
+          expect(res).to.be.true;
+          done();
+        });
     });
   });
-  
+
   context('isAtlasStream', () => {
     it('reports on atlas', () => {
       expect(isAtlasStream('mongodb://admin:catscatscats@atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb.net/')).to.be.true;

@@ -59,15 +59,10 @@ function isAtlas(uri) {
   return !!getHostnameFromUrl(uri).match(ATLAS_REGEX);
 }
 
-async function isLocalAtlas(countFn) {
-  try {
-    const count = await countFn('admin', 'atlascli', {
-      managedClusterType: 'atlasCliLocalDevCluster'
-    });
-    return count > 0;
-  } catch (e) {
-    return false;
-  }
+function isLocalAtlas(countFn) {
+  return countFn('admin', 'atlascli', {
+    managedClusterType: 'atlasCliLocalDevCluster'
+  }).then(count => count > 0).catch(() => false);
 }
 
 function isAtlasStream(uri) {
