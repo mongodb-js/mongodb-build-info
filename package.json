@@ -1,6 +1,6 @@
 {
   "name": "mongodb-build-info",
-  "version": "1.4.0",
+  "version": "1.6.2",
   "description": "Extract information from mongodb's buildInfo",
   "main": "index.js",
   "scripts": {

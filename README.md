@@ -1,4 +1,4 @@
-# mongodb-build-info [![Build Status][azure-url]][azure-img]
+# mongodb-build-info
 
 Helpful functions to figure out if a connection is on Atlas, Atlas Data Lake,
 Enterpise, or DocumentDB/CosmosDB.
@@ -25,7 +25,7 @@ MongoClient.connect('localhost:27017', function (err, client) {
 
   function parseCmdLineOpts (err, res) {
     if (err) console.log('Command failed', err.message)
-    
+
     const { isGenuine, serverName } = getGenuineMongoDB(buildInfo, res)
   }
 })
@@ -35,7 +35,7 @@ MongoClient.connect('localhost:27017', function (err, client) {
 ### getDataLake(buildInfo)
 Returns an object:
 
-__isDataLake__: boolean. 
+__isDataLake__: boolean.
 __dlVersion__: version of dataLake, a string.
 
 ### isEnterprise(buildInfo)
@@ -47,6 +47,9 @@ Returns a boolean.
 ### isLocalAtlas((db: string, coll: string, query: Document) => Promise\<number\>)
 Returns a Promise\<boolean\>.
 
+### isAtlasStream(uri)
+Returns a boolean.
+
 ### isLocalhost(uri)
 Returns a boolean.
 
@@ -56,7 +59,7 @@ Returns a boolean.
 ### getGenuineMongoDB(buildInfo, cmdLineOpts)
 Returns an object:
 
-__isGenuine__: boolean. 
+__isGenuine__: boolean.
 __serverName__: name of the server (mongoDB, cosmosDB, or documentDB).
 
 ### getBuildEnv(buildInfo)
@@ -72,6 +75,3 @@ npm install -S mongodb-build-info
 
 # License
 Apache-2.0
-
-[azure-url]: https://dev.azure.com/team-compass/compass/_apis/build/status/mongodb-js.mongodb-build-info?branchName=master
-[azure-img]: https://dev.azure.com/team-compass/compass/_build/results?buildId=1457&view=results

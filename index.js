@@ -1,8 +1,11 @@
 const { default: ConnectionString } = require('mongodb-connection-string-url');
 
-const ATLAS_REGEX = /\.mongodb(-dev)?\.net$/i;
-const LOCALHOST_REGEX = /^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/i;
+const ATLAS_REGEX = /\.mongodb(-dev|-qa|-stage)?\.net$/i;
+const ATLAS_STREAM_REGEX = /^atlas-stream-.+/i;
+const LOCALHOST_REGEX = /^(localhost|127\.([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])|0\.0\.0\.0|(?:0*\:)*?:?0*1)$/i;
 const DIGITAL_OCEAN_REGEX = /\.mongo\.ondigitalocean\.com$/i;
+const COSMOS_DB_REGEX = /\.cosmos\.azure\.com$/i;
+const DOCUMENT_DB_REGEX = /docdb(-elastic)?\.amazonaws\.com$/i;
 
 function getDataLake(buildInfo) {
   const res = {
@@ -31,6 +34,10 @@ function isEnterprise(buildInfo) {
 }
 
 function getHostnameFromHost(host) {
+  if (host.startsWith('[')) {
+    // If it's ipv6 return what's in the brackets.
+    return host.substring(1).split(']')[0];
+  }
   return host.split(':')[0];
 }
 
@@ -41,8 +48,7 @@ function getHostnameFromUrl(url) {
 
   try {
     const connectionString = new ConnectionString(url);
-    const firstHost = connectionString.hosts[0];
-    return firstHost.split(':')[0];
+    return getHostnameFromHost(connectionString.hosts[0]);
   } catch (e) {
     // we assume is already an hostname, will further be checked against regexes
     return getHostnameFromHost(url);
@@ -64,6 +70,11 @@ async function isLocalAtlas(countFn) {
   }
 }
 
+function isAtlasStream(uri) {
+  const host = getHostnameFromUrl(uri);
+  return !!(host.match(ATLAS_REGEX) && host.match(ATLAS_STREAM_REGEX));
+}
+
 function isLocalhost(uri) {
   return !!getHostnameFromUrl(uri).match(LOCALHOST_REGEX);
 }
@@ -81,28 +92,26 @@ function getBuildEnv(buildInfo) {
   return { serverOs, serverArch };
 }
 
-function getGenuineMongoDB(buildInfo, cmdLineOpts) {
-  const res = {
+function getGenuineMongoDB(uri) {
+  const hostname = getHostnameFromUrl(uri);
+  if (hostname.match(COSMOS_DB_REGEX)) {
+    return {
+      isGenuine: false,
+      serverName: 'cosmosdb'
+    };
+  }
+
+  if (hostname.match(DOCUMENT_DB_REGEX)) {
+    return {
+      isGenuine: false,
+      serverName: 'documentdb'
+    };
+  }
+
+  return {
     isGenuine: true,
     serverName: 'mongodb'
   };
-
-  if (cmdLineOpts) {
-    if (buildInfo.hasOwnProperty('_t')) {
-      res.isGenuine = false;
-      res.serverName = 'cosmosdb';
-    }
-
-    if (
-      cmdLineOpts.hasOwnProperty('errmsg') &&
-      cmdLineOpts.errmsg.indexOf('not supported') !== -1
-    ) {
-      res.isGenuine = false;
-      res.serverName = 'documentdb';
-    }
-  }
-
-  return res;
 }
 
 module.exports = {
@@ -110,6 +119,7 @@ module.exports = {
   isEnterprise,
   isAtlas,
   isLocalAtlas,
+  isAtlasStream,
   isLocalhost,
   isDigitalOcean,
   getGenuineMongoDB,

@@ -2,6 +2,7 @@ const expect = require('chai').expect;
 const fixtures = require('./fixtures');
 const {
   isAtlas,
+  isAtlasStream,
   getDataLake,
   isLocalhost,
   isLocalAtlas,
@@ -70,6 +71,16 @@ describe('mongodb-build-info', () => {
       expect(isAtlas('cat-data-sets.cats.mongodb-dev.net')).to.be.true;
     });
 
+    it('returns true with atlas qa', () => {
+      expect(isAtlas('mongodb+srv://admin:catscatscats@cat-data-sets.cats.mongodb-qa.net/admin')).to.be.true;
+      expect(isAtlas('cat-data-sets.cats.mongodb-qa.net')).to.be.true;
+    });
+
+    it('returns true with atlas staging', () => {
+      expect(isAtlas('mongodb+srv://admin:catscatscats@cat-data-sets.cats.mongodb-stage.net/admin')).to.be.true;
+      expect(isAtlas('cat-data-sets.cats.mongodb-stage.net')).to.be.true;
+    });
+
     it('returns false if not atlas', () => {
       expect(isAtlas('cat-data-sets.cats.mangodb.net')).to.be.false;
       expect(isAtlas('cat-data-sets.catsmongodb.net')).to.be.false;
@@ -113,6 +124,52 @@ describe('mongodb-build-info', () => {
       expect(res).to.be.true;
     });
   });
+  
+  context('isAtlasStream', () => {
+    it('reports on atlas', () => {
+      expect(isAtlasStream('mongodb://admin:catscatscats@atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb.net/')).to.be.true;
+      expect(isAtlasStream('mongodb://admin:catscatscats@atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb.net/')).to.be.true;
+    });
+
+    it('works with host only', () => {
+      expect(isAtlasStream('atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb.net:27017')).to.be.true;
+    });
+
+    it('works with hostname', () => {
+      expect(isAtlasStream('atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb.net')).to.be.true;
+    });
+
+    it('returns true with atlas dev', () => {
+      expect(isAtlasStream('mongodb://admin:catscatscats@atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb-dev.net/')).to.be.true;
+      expect(isAtlasStream('atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb-dev.net')).to.be.true;
+    });
+
+    it('returns true with atlas qa', () => {
+      expect(isAtlasStream('mongodb://admin:catscatscats@atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb-qa.net/')).to.be.true;
+      expect(isAtlasStream('atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb-qa.net')).to.be.true;
+    });
+
+    it('returns true with atlas staging', () => {
+      expect(isAtlasStream('mongodb://admin:catscatscats@atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb-stage.net/')).to.be.true;
+      expect(isAtlasStream('atlas-stream-64ba1372b2a9f1545031f34d-gkumd.virginia-usa.a.query.mongodb-stage.net')).to.be.true;
+    });
+
+    it('returns false if not atlas stream', () => {
+      expect(isAtlasStream('cat-data-sets.cats.mangodb.net')).to.be.false;
+      expect(isAtlasStream('cat-data-sets.catsmongodb.net')).to.be.false;
+      expect(isAtlasStream('cat-data-sets.cats.mongodb.netx')).to.be.false;
+      expect(isAtlasStream('cat-data-sets.cats.mongodb.com')).to.be.false;
+      expect(isAtlasStream('localhost')).to.be.false;
+    });
+
+    it('does not throw and returns with invalid argument', () => {
+      expect(isAtlasStream(123)).to.be.false;
+      expect(isAtlasStream('')).to.be.false;
+      expect(isAtlasStream({})).to.be.false;
+      expect(isAtlasStream(undefined)).to.be.false;
+      expect(isAtlasStream(null)).to.be.false;
+    });
+  });
 
   context('isLocalhost', () => {
     it('reports on localhost', () => {
@@ -121,6 +178,30 @@ describe('mongodb-build-info', () => {
 
     it('reports on localhost of type 127.0.0.1', () => {
       expect(isLocalhost('127.0.0.1:27019')).to.be.true;
+    });
+
+    // Although 127.0.0.1 is usually used for localhost,
+    // anything in the 127.0.0.1 -> 127.255.255.255 can be used.
+    it('reports on localhost of type 127.x.x.x', () => {
+      expect(isLocalhost('127.0.100.1:27019')).to.be.true;
+      expect(isLocalhost('127.250.100.250:27019')).to.be.true;
+      expect(isLocalhost('127.10.0.0:27019')).to.be.true;
+    });
+
+    // IPv6 loopback addresses.
+    it('reports on localhost of type [::1]', () => {
+      expect(isLocalhost('[::1]')).to.be.true;
+      expect(isLocalhost('mongodb://[::1]/?readPreference=secondary')).to.be.true;
+      expect(isLocalhost('[0000:0000:0000:0000:0000:0000:0000:0001]')).to.be.true;
+      expect(isLocalhost('[0:0:0:0:0:0:0:1]')).to.be.true;
+      expect(isLocalhost('[0::1]')).to.be.true;
+      expect(isLocalhost('[::1]:27019')).to.be.true;
+      expect(isLocalhost('[0:0:0:0:0:0:0:1]:27019')).to.be.true;
+      expect(isLocalhost('[0::1]:27019')).to.be.true;
+    });
+
+    it('reports on localhost of type 0.0.0.0', () => {
+      expect(isLocalhost('0.0.0.0:27019')).to.be.true;
     });
 
     it('works as url', () => {
@@ -139,10 +220,15 @@ describe('mongodb-build-info', () => {
     });
 
     it('does not report if localhost or 127.0.0.1 is not the hostname', () => {
-      expect(isLocalhost('127.0.0.2')).to.be.false;
+      expect(isLocalhost('127.0.0.500')).to.be.false;
+      expect(isLocalhost('128.0.0.2')).to.be.false;
       expect(isLocalhost('0.0.0.1')).to.be.false;
       expect(isLocalhost('remotehost')).to.be.false;
       expect(isLocalhost('mongodb://remotelocalhost')).to.be.false;
+      expect(isLocalhost('[test:ipv6::1]')).to.be.false;
+      expect(isLocalhost('[1:0:0:0:0:0:0:1]')).to.be.false;
+      expect(isLocalhost('[test:ipv6::1]:27019')).to.be.false;
+      expect(isLocalhost('[1:0:0:0:0:0:0:1]:27019')).to.be.false;
     });
 
     it('does not throw and returns with invalid argument', () => {
@@ -184,15 +270,19 @@ describe('mongodb-build-info', () => {
 
   context('isGenuineMongoDB', () => {
     it('reports on CosmosDB', () => {
-      const isGenuine = getGenuineMongoDB(fixtures.COSMOSDB_BUILD_INFO, fixtures.CMD_LINE_OPTS);
-      expect(isGenuine.isGenuine).to.be.false;
-      expect(isGenuine.serverName).to.equal('cosmosdb');
+      fixtures.COSMOS_DB_URI.forEach((uri) => {
+        const isGenuine = getGenuineMongoDB(uri);
+        expect(isGenuine.isGenuine).to.be.false;
+        expect(isGenuine.serverName).to.equal('cosmosdb');
+      });
     });
 
     it('reports on DocumentDB', () => {
-      const isGenuine = getGenuineMongoDB(fixtures.BUILD_INFO_3_2, fixtures.DOCUMENTDB_CMD_LINE_OPTS);
-      expect(isGenuine.isGenuine).to.be.false;
-      expect(isGenuine.serverName).to.equal('documentdb');
+      fixtures.DOCUMENT_DB_URIS.forEach((uri) => {
+        const isGenuine = getGenuineMongoDB(uri);
+        expect(isGenuine.isGenuine).to.be.false;
+        expect(isGenuine.serverName).to.equal('documentdb');
+      });
     });
 
     it('does not report on 3.2', () => {
