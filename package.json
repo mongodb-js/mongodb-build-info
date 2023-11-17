@@ -35,7 +35,7 @@
     "release-it": "^14.11.8"
   },
   "dependencies": {
-    "mongodb-connection-string-url": "^2.2.0"
+    "mongodb-connection-string-url": "^3.0.0"
   },
   "release-it": {}
 }
