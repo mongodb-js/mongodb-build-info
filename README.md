@@ -1,3 +1,6 @@
+> [!IMPORTANT]  
+> This repository was moved into the [mongodb-js/devtools-shared](https://github.com/mongodb-js/devtools-shared/tree/main/packages/mongodb-build-info) monorepo.
+
 # mongodb-build-info
 
 Helpful functions to figure out if a connection is on Atlas, Atlas Data Lake,
